@@ -17,7 +17,7 @@ namespace Mindful.Controllers
 
         public IActionResult Index()
         {
-            string query = "SELECT Id, First_Name, Last_Name, Email, Birthdate FROM Teacher";
+            string query = "SELECT id, first_name, last_name, email, birthdate FROM teachers";
             DataTable dt = _dbHelper.ExecuteSelect(query);
 
             var teachers = new List<Teacher>();
@@ -26,11 +26,11 @@ namespace Mindful.Controllers
             {
                 teachers.Add(new Teacher
                 {
-                    Id = (int)row["Id"],
-                    First_Name = row["First_Name"].ToString(),
-                    Last_Name = row["Last_Name"].ToString(),
-                    Email = row["Email"].ToString(),
-                    Birthdate = row["Birthdate"] == DBNull.Value ? null : (DateTime?)row["Birthdate"]
+                    id = (int)row["id"],
+                    first_name = row["first_name"].ToString(),
+                    last_name = row["last_name"].ToString(),
+                    email = row["email"].ToString(),
+                    birthdate = (DateTime)row["birthdate"]
                 });
             }
 

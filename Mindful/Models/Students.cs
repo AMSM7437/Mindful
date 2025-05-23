@@ -2,13 +2,13 @@
 {
     public class Students
     {
-        public int Id { get; set; }
-        public int Classesid { get; set; }
-        public string First_Name { get; set; }
-        public string Last_Name { get; set; }
-        public string Father_Name { get; set; }
-        public string Mother_Name { get; set; }
-        public DateTime? Birthdate { get; set; }
-        public int Address { get; set; }
+        public int id { get; set; }
+        public int classesid { get; set; }
+        public string first_name { get; set; }
+        public string last_name { get; set; }
+        public string father_name { get; set; }
+        public string mother_name { get; set; }
+        public DateTime? birthdate { get; set; }
+        public int address { get; set; }
     }
 }
