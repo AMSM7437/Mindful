@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
 
-namespace HelperBase
+namespace HelperBasens
 {
     public class HelperBase
     {
