@@ -1,8 +1,86 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewBag.Title = "Teacher Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container"> 
+    
+    
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="drawer-card shadow">
+                <div class="drawer-Header"><p style="color :white ; font-size : 24px">Mindful</p>         <div class="drawer-divider"></div> </div>
+        
+                <div class="drawer-card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item">Dashboard</a>
+                        <a href="#" class="list-group-item active">Teachers</a>
+                        <a href="#" class="list-group-item">Student</a>
+                        <a href="#" class="list-group-item">Courses</a>
+                        <a href="#" class="list-group-item">Statistics</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9" > 
+            <div class="card shadow">
+                <div class="card-header">
+                    <h6>Teacher Information</h6>
+                </div>
+                <div class="card-body">
+                  @*   <ul class="nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">All Teachers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Active Teachers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Non-active Teachers</a>
+                        </li>
+                    </ul> *@
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Teacher ID</th>
+                                    <th>Name</th>
+                                    <th>Subject</th>
+                                    <th>Phone Number</th>
+                                    <th>Governorate</th>
+                                    <th>Residence</th>
+                                    <th>Date of birth</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>202022223</td>
+                                    <td>Hamza ayoubi</td>
+                                    <td>Physica 1 <small class="text-muted">Math 1, PE</small></td>
+                                    <td>0950066018</td>
+                                    <td>Rukrr Aldeen</td>
+                                    <td>Rukrr Aldeen</td>
+                                    <td>2003/hg/17</td>
+                                </tr>
+                                <tr>
+                                    <td>202022223</td>
+                                    <td>Hamza ayoubi </td>
+                                    <td>Motn2 <small class="text-muted">Alchemistry 2</small></td>
+                                    <td>0950066018</td>
+                                    <td>Rukrr Aldeen</td>
+                                    <td>Rukrr Aldeen</td>
+                                    <td>2003/hg/17</td>
+                                </tr>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
