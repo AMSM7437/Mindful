@@ -17,7 +17,7 @@ namespace Mindful.Controllers
 
         public IActionResult Index()
         {
-            string query = "SELECT Id, Name FROM Class";
+            string query = "SELECT id, name FROM classes";
             DataTable dt = _dbHelper.ExecuteSelect(query);
 
             var classes = new List<Class>();
@@ -26,8 +26,8 @@ namespace Mindful.Controllers
             {
                 classes.Add(new Class
                 {
-                    Id = (int)row["Id"],
-                    Name = row["Name"].ToString()
+                    Id = (int)row["id"],
+                    Name = row["name"].ToString()
                 });
             }
 

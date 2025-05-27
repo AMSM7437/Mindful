@@ -2,10 +2,8 @@
 {
     public class Grade
     {
-        public int Id { get; set; }
-        public string First_Name { get; set; }
-        public string Last_Name { get; set; }
-        public string Email { get; set; }
-        public DateTime? Birthdate { get; set; }
+        public int studentsid { get; set; }
+        public int subjectsid { get; set; }
+        public int mark { get; set; }
     }
 }

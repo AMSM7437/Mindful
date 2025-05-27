@@ -2,10 +2,10 @@
 {
     public class Teacher
     {
-        public int Id { get; set; }
-        public string First_Name { get; set; }
-        public string Last_Name { get; set; }
-        public string Email { get; set; }
-        public DateTime? Birthdate { get; set; }
+        public int id { get; set; }
+        public string first_Name { get; set; }
+        public string last_Name { get; set; }
+        public string email { get; set; }
+        public DateTime? birthdate { get; set; }
     }
 }

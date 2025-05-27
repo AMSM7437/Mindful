@@ -2,9 +2,9 @@
 {
     public class Subject
     {
-        public int Id { get; set; }
-        public int Teachersid { get; set; }
-        public string Name { get; set; }
-        public int Passing_Grade { get; set; }
+        public int id { get; set; }
+        public int teachersid { get; set; }
+        public string name { get; set; }
+        public int passing_Grade { get; set; }
     }
 }
