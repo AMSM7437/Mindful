@@ -2,39 +2,87 @@
 using System.Collections.Generic;
 using System.Data;
 using Mindful.Models;
-using HelperBasens;
+using Mindful.DataAccess;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 
 namespace Mindful.Controllers
 {
     public class TeacherController : Controller
     {
-        private readonly HelperBase _dbHelper;
+        private readonly DbHelper _dbHelper;
 
-        public TeacherController(HelperBase dbHelper)
+        public TeacherController(DbHelper dbHelper)
         {
             _dbHelper = dbHelper;
         }
 
         public IActionResult Index()
         {
-            string query = "SELECT id, first_name, last_name, email, birthdate FROM teachers";
-            DataTable dt = _dbHelper.ExecuteSelect(query);
-
-            var teachers = new List<Teacher>();
-
-            foreach (DataRow row in dt.Rows)
+            try
             {
-                teachers.Add(new Teacher
+                var query = "SELECT id, first_name, last_name, email, birthdate FROM teachers";
+                var dataTable = _dbHelper.ExecuteQuery(query);
+
+                var teachers = new List<Teacher>();
+
+                foreach (DataRow row in dataTable.Rows)
                 {
-                    id = (int)row["id"],
-                    first_name = row["first_name"].ToString(),
-                    last_name = row["last_name"].ToString(),
-                    email = row["email"].ToString(),
-                    birthdate = (DateTime)row["birthdate"]
-                });
+                    teachers.Add(new Teacher
+                    {
+                        id = Convert.ToInt32(row["id"]),
+                        first_Name = row["first_name"].ToString(),
+                        last_Name = row["last_name"].ToString(),
+                        email = row["email"].ToString(),
+                        birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"])
+                    });
+                }
+
+                return View(teachers);
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.WriteAllText("error.log", ex.ToString());
+                return View("Error", ex);
+            }
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Teacher teacher)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(teacher);
             }
 
-            return View(teachers);
+            try
+            {
+                var query = "INSERT INTO teachers (first_name, last_name, email, birthdate) VALUES (@first_name, @last_name, @email, @birthdate)";
+                var parameters = new[]
+                {
+      
+            new SqlParameter("@first_name", teacher.first_Name),
+            new SqlParameter("@last_name", teacher.last_Name),
+            new SqlParameter("@email", teacher.email),
+            new SqlParameter("@birthdate", (object?)teacher.birthdate ?? DBNull.Value)
+        };
+
+                _dbHelper.ExecuteNonQuery(query, parameters);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.AppendAllText("error.log", $"{DateTime.Now}: {ex}\n\n");
+                return Content($"Error: {ex.Message}\n{ex.StackTrace}");
+            }
         }
+
     }
 }
