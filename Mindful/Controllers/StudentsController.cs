@@ -4,6 +4,7 @@ using System.Data;
 using Mindful.Models;
 using Mindful.DataAccess;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mindful.Controllers
 {
@@ -42,8 +43,10 @@ namespace Mindful.Controllers
                         father_name = row["father_name"].ToString(),
                         mother_name = row["mother_name"].ToString(),
                         birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"]),
-                        address = Convert.ToInt32(row["address"])
+                        address = Convert.ToInt32(row["address"]),
+                        class_name = row["class_name"]?.ToString() // ✅ THIS IS WHAT WAS MISSING
                     });
+
                 }
 
                 return View(students);
@@ -87,6 +90,13 @@ namespace Mindful.Controllers
                     new SqlParameter("@birthdate", (object?)student.birthdate ?? DBNull.Value),
                     new SqlParameter("@address", student.address)
                 };
+                var classData = _dbHelper.ExecuteQuery("SELECT id, name FROM classes");
+                student.ClassOptions = classData.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
 
                 _dbHelper.ExecuteNonQuery(query, parameters);
 
@@ -122,6 +132,13 @@ namespace Mindful.Controllers
                     birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"]),
                     address = Convert.ToInt32(row["address"])
                 };
+                var classData = _dbHelper.ExecuteQuery("SELECT id, name FROM classes");
+                student.ClassOptions = classData.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
 
                 return View(student);
             }
@@ -180,9 +197,13 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "DELETE FROM students WHERE id = @id";
-                var parameters = new[] { new SqlParameter("@id", id) };
-                _dbHelper.ExecuteNonQuery(query, parameters);
+                // First delete grades associated with the student
+                var deleteGradesQuery = "DELETE FROM grades WHERE studentsid = @id";
+                _dbHelper.ExecuteNonQuery(deleteGradesQuery, new[] { new SqlParameter("@id", id) });
+
+                // Then delete the student
+                var deleteStudentQuery = "DELETE FROM students WHERE id = @id";
+                _dbHelper.ExecuteNonQuery(deleteStudentQuery, new[] { new SqlParameter("@id", id) });
 
                 return RedirectToAction("Index");
             }
@@ -192,5 +213,6 @@ namespace Mindful.Controllers
                 return Content($"Error: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
     }
 }

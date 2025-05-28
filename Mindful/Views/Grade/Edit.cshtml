@@ -1,6 +1,6 @@
-﻿@model Mindful.Models.Teacher
+﻿@model Mindful.Models.Grade
 @{
-    ViewBag.Title = "Add Teacher";
+    ViewBag.Title = "Edit Grade";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,10 +16,10 @@
                 <div class="drawer-card-body">
                     <nav class="list-group">
                         <a href="@Url.Action("Index", "Home")" class="list-group-item">Dashboard</a>
-                        <a href="@Url.Action("Index", "Teacher")" class="list-group-item active">Teachers</a>
+                        <a href="@Url.Action("Index", "Teacher")" class="list-group-item">Teachers</a>
                         <a href="@Url.Action("Index", "Student")" class="list-group-item">Student</a>
                         <a href="@Url.Action("Index", "Subject")" class="list-group-item">Subjects</a>
-                        <a href="#" class="list-group-item">Statistics</a>
+                        <a href="@Url.Action("Index", "Grade")" class="list-group-item active">Grades</a>
                     </nav>
                 </div>
             </div>
@@ -28,40 +28,34 @@
         <main class="content">
             <div class="card shadow">
                 <div class="card-header">
-                    <h6>@ViewBag.Title</h6>
+                    <h6>Edit Grade</h6>
                 </div>
                 <div class="card-body">
-                    <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+                    <form asp-action="Edit" method="post">
                         @Html.AntiForgeryToken()
-                        @Html.HiddenFor(model => model.id)
+
+                        <input type="hidden" asp-for="studentsid" />
+                        <input type="hidden" asp-for="subjectsid" />
 
                         <div class="form-group">
-                            <label asp-for="first_Name"></label>
-                            <input asp-for="first_Name" class="form-control" />
-                            <span asp-validation-for="first_Name" class="text-danger"></span>
+                            <label>Student</label>
+                            <select asp-for="studentsid" asp-items="Model.StudentOptions" class="form-control" disabled></select>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="last_Name"></label>
-                            <input asp-for="last_Name" class="form-control" />
-                            <span asp-validation-for="last_Name" class="text-danger"></span>
+                            <label>Subject</label>
+                            <select asp-for="subjectsid" asp-items="Model.SubjectOptions" class="form-control" disabled></select>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="email"></label>
-                            <input asp-for="email" type="email" class="form-control" />
-                            <span asp-validation-for="email" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="birthdate"></label>
-                            <input asp-for="birthdate" type="date" class="form-control" />
-                            <span asp-validation-for="birthdate" class="text-danger"></span>
+                            <label asp-for="mark"></label>
+                            <input asp-for="mark" class="form-control" type="number" min="0" max="100" />
+                            <span asp-validation-for="mark" class="text-danger"></span>
                         </div>
 
                         <div class="actions mt-3">
                             <button type="submit" class="add-btn">Save</button>
-                            <a href="@Url.Action("Index", "Teacher")" class="btn btn-secondary">Cancel</a>
+                            <a href="@Url.Action("Index", "Grade")" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -71,7 +65,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

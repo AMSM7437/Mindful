@@ -36,10 +36,12 @@ namespace Mindful.Controllers
                     subjects.Add(new Subject
                     {
                         id = Convert.ToInt32(row["id"]),
-                        teachersid = Convert.ToInt32(row["teachersid"]),
+                        teachersid = row["teachersid"] == DBNull.Value ? null : Convert.ToInt32(row["teachersid"]),
                         name = row["name"].ToString(),
-                        passing_Grade = Convert.ToInt32(row["passing_grade"])
+                        passing_Grade = Convert.ToInt32(row["passing_grade"]),
+                        teacher_name = row["teacher_name"] == DBNull.Value ? null : row["teacher_name"].ToString()
                     });
+
                 }
 
                 return View(subjects);
@@ -101,6 +103,7 @@ namespace Mindful.Controllers
                     return NotFound();
 
                 var row = table.Rows[0];
+
                 var subject = new Subject
                 {
                     id = Convert.ToInt32(row["id"]),
@@ -158,9 +161,13 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "DELETE FROM subjects WHERE id = @id";
-                var parameters = new[] { new SqlParameter("@id", id) };
-                _dbHelper.ExecuteNonQuery(query, parameters);
+                // First delete related grades
+                var deleteGradesQuery = "DELETE FROM grades WHERE subjectsid = @id";
+                _dbHelper.ExecuteNonQuery(deleteGradesQuery, new[] { new SqlParameter("@id", id) });
+
+                // Then delete the subject
+                var deleteSubjectQuery = "DELETE FROM subjects WHERE id = @id";
+                _dbHelper.ExecuteNonQuery(deleteSubjectQuery, new[] { new SqlParameter("@id", id) });
 
                 return RedirectToAction("Index");
             }
@@ -170,5 +177,6 @@ namespace Mindful.Controllers
                 return Content($"Error: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
     }
 }

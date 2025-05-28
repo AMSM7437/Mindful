@@ -1,0 +1,19 @@
+﻿@model string
+<aside class="sidebar">
+    <div class="drawer-card shadow">
+        <div class="drawer-Header">
+            <p style="color:white; font-size:24px">Mindful</p>
+            <div class="drawer-divider" style="margin-top : 20px ; margin-bottom : 20px"></div>
+        </div>
+        <div class="drawer-card-body">
+            <nav class="list-group">
+                <a href="@Url.Action("Index", "Home")" class="list-group-item @(Model == "Dashboard" ? "active" : "")">Dashboard</a>
+                <a href="@Url.Action("Index", "Teacher")" class="list-group-item @(Model == "Teachers" ? "active" : "")">Teachers</a>
+                <a href="@Url.Action("Index", "Student")" class="list-group-item @(Model == "Students" ? "active" : "")">Student</a>
+                <a href="@Url.Action("Index", "Subject")" class="list-group-item @(Model == "Subjects" ? "active" : "")">Subjects</a>
+                <a href="@Url.Action("Index", "Grade")" class="list-group-item @(Model == "Grades" ? "active" : "")">Grades</a>
+            
+            </nav>
+        </div>
+    </div>
+</aside>

@@ -4,6 +4,7 @@ using System.Data;
 using Mindful.Models;
 using Mindful.DataAccess;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mindful.Controllers
 {
@@ -20,26 +21,39 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "SELECT t.id, t.first_name, t.last_name, t.email, t.birthdate, s.name AS subject_name FROM teachers t LEFT JOIN subjects s ON t.id = s.teachersid";
+                var query = @"
+            SELECT t.id, t.first_name, t.last_name, t.email, t.birthdate, s.name AS subject_name
+            FROM teachers t
+            LEFT JOIN subjects s ON t.id = s.teachersid";
+
                 var dataTable = _dbHelper.ExecuteQuery(query);
 
-                var teachers = new List<Teacher>();
+                var teacherDict = new Dictionary<int, Teacher>();
 
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    teachers.Add(new Teacher
-                    {
-                        id = Convert.ToInt32(row["id"]),
-                        first_Name = row["first_name"].ToString(),
-                        last_Name = row["last_name"].ToString(),
-                        email = row["email"].ToString(),
-                        birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"]),
-                        subject_Name = row["subject_name"].ToString()
-                    });
+                    int teacherId = Convert.ToInt32(row["id"]);
 
+                    if (!teacherDict.ContainsKey(teacherId))
+                    {
+                        teacherDict[teacherId] = new Teacher
+                        {
+                            id = teacherId,
+                            first_Name = row["first_name"].ToString(),
+                            last_Name = row["last_name"].ToString(),
+                            email = row["email"].ToString(),
+                            birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"]),
+                            SubjectNames = new List<string>()
+                        };
+                    }
+
+                    if (row["subject_name"] != DBNull.Value)
+                    {
+                        teacherDict[teacherId].SubjectNames.Add(row["subject_name"].ToString());
+                    }
                 }
 
-                return View(teachers);
+                return View(teacherDict.Values.ToList());
             }
             catch (Exception ex)
             {
@@ -105,14 +119,44 @@ namespace Mindful.Controllers
                     birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"])
                 };
 
+                // Dropdown: All subjects not currently assigned
+                var allSubjects = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects WHERE teachersid IS NULL");
+
+
+                teacher.SubjectOptions = allSubjects.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
+
+                // Multi-select: Currently assigned subjects
+                var assignedSubjects = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects WHERE teachersid IS NULL", new[] {
+            new SqlParameter("@id", id)
+        });
+
+                teacher.AssignedSubjectOptions = assignedSubjects.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
+
+                teacher.AssignedSubjectIds = assignedSubjects.AsEnumerable()
+                    .Select(r => Convert.ToInt32(r["id"]))
+                    .ToList();
+
                 return View(teacher);
             }
             catch (Exception ex)
             {
                 System.IO.File.AppendAllText("error.log", $"{DateTime.Now}: {ex}\n\n");
-                return View("Error", ex);
+                return Content($"Error: {ex.Message}\n\n{ex.StackTrace}");
             }
+
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -125,24 +169,66 @@ namespace Mindful.Controllers
 
             try
             {
-                var query = @"
-                    UPDATE teachers 
-                    SET first_name = @first_name, 
-                        last_name = @last_name, 
-                        email = @email, 
-                        birthdate = @birthdate 
-                    WHERE id = @id";
+                // Update teacher info
+                var updateTeacherQuery = @"
+            UPDATE teachers 
+            SET first_name = @first_name, 
+                last_name = @last_name, 
+                email = @email, 
+                birthdate = @birthdate 
+            WHERE id = @id";
 
                 var parameters = new[]
                 {
-                    new SqlParameter("@first_name", teacher.first_Name),
-                    new SqlParameter("@last_name", teacher.last_Name),
-                    new SqlParameter("@email", teacher.email),
-                    new SqlParameter("@birthdate", (object?)teacher.birthdate ?? DBNull.Value),
-                    new SqlParameter("@id", teacher.id)
-                };
+            new SqlParameter("@first_name", teacher.first_Name),
+            new SqlParameter("@last_name", teacher.last_Name),
+            new SqlParameter("@email", teacher.email),
+            new SqlParameter("@birthdate", (object?)teacher.birthdate ?? DBNull.Value),
+            new SqlParameter("@id", teacher.id)
+        };
 
-                _dbHelper.ExecuteNonQuery(query, parameters);
+                _dbHelper.ExecuteNonQuery(updateTeacherQuery, parameters);
+
+                // Handle removals: set teachersid = NULL for all that were previously assigned but not submitted
+                var getCurrentSubjectIdsQuery = "SELECT id FROM subjects WHERE teachersid = @id";
+                var currentRows = _dbHelper.ExecuteQuery(getCurrentSubjectIdsQuery, new[] { new SqlParameter("@id", teacher.id) });
+
+                var currentIds = currentRows.AsEnumerable().Select(r => Convert.ToInt32(r["id"])).ToList();
+                var submittedIds = teacher.AssignedSubjectIds ?? new List<int>();
+
+                var toUnassign = currentIds.Except(submittedIds).ToList();
+
+                foreach (var sid in toUnassign)
+                {
+                    _dbHelper.ExecuteNonQuery("UPDATE subjects SET teachersid = NULL WHERE id = @id", new[] {
+                new SqlParameter("@id", sid)
+            });
+                }
+
+                // Reassign selected subjects (in case user reassigned them)
+                foreach (var sid in submittedIds)
+                {
+                    _dbHelper.ExecuteNonQuery("UPDATE subjects SET teachersid = @tid WHERE id = @id", new[] {
+                new SqlParameter("@tid", teacher.id),
+                new SqlParameter("@id", sid)
+            });
+                }
+                foreach (var sid in submittedIds)
+                {
+                    _dbHelper.ExecuteNonQuery("UPDATE subjects SET teachersid = @tid WHERE id = @id", new[] {
+        new SqlParameter("@tid", teacher.id),
+        new SqlParameter("@id", sid)
+    });
+                }
+                // Assign new subject from dropdown if provided and not already assigned
+                if (teacher.SelectedSubjectId.HasValue && !submittedIds.Contains(teacher.SelectedSubjectId.Value))
+                {
+                    _dbHelper.ExecuteNonQuery("UPDATE subjects SET teachersid = @tid WHERE id = @id", new[] {
+        new SqlParameter("@tid", teacher.id),
+        new SqlParameter("@id", teacher.SelectedSubjectId.Value)
+    });
+                }
+
 
                 return RedirectToAction("Index");
             }
@@ -152,6 +238,8 @@ namespace Mindful.Controllers
                 return Content($"Error: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
+
 
         public IActionResult Delete(int id)
         {

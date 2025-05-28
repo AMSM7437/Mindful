@@ -1,0 +1,40 @@
+﻿@model Mindful.Models.Students
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(m => m.id)
+
+<div class="form-group">
+    <label asp-for="first_name"></label>
+    <input asp-for="first_name" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="last_name"></label>
+    <input asp-for="last_name" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="father_name"></label>
+    <input asp-for="father_name" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="mother_name"></label>
+    <input asp-for="mother_name" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="birthdate"></label>
+    <input asp-for="birthdate" type="date" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="address"></label>
+    <input asp-for="address" class="form-control" />
+</div>
+<div class="form-group">
+    <label for="classesid">Class</label>
+    <select asp-for="classesid" class="form-control" asp-items="Model.ClassOptions">
+        <option value="">-- Select Class --</option>
+    </select>
+</div>
+
+<div class="actions mt-3">
+    <button type="submit" class="add-btn">Save</button>
+    <a href="@Url.Action("Index", "Student")" class="btn btn-secondary">Cancel</a>
+</div>

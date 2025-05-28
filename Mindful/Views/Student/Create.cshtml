@@ -1,0 +1,13 @@
+﻿@model Mindful.Models.Students
+@{
+    ViewBag.Title = Model.id == 0 ? "Create Student" : "Edit Student";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card shadow">
+    <div class="card-header"><h6>@ViewBag.Title</h6></div>
+    <div class="card-body">
+        <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+            @await Html.PartialAsync("_StudentForm", Model)
+        </form>
+    </div>
+</div>

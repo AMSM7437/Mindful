@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Mindful.Models.Students>
+@{
+    ViewBag.Title = "Student Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="teachers-container">
+    <div class="teachers-layout">
+
+        <aside class="sidebar">
+            <div class="drawer-card shadow">
+                <div class="drawer-Header">
+                    <p style="color:white; font-size:24px">Mindful</p>
+                    <div class="drawer-divider" style="margin-top : 20px ; margin-bottom : 20px"></div>
+                </div>
+                <div class="drawer-card-body">
+                    <nav class="list-group">
+                        <a href="@Url.Action("Index", "Home")" class="list-group-item">Dashboard</a>
+                        <a href="@Url.Action("Index", "Teacher")" class="list-group-item">Teachers</a>
+                        <a href="#" class="list-group-item active">Student</a>
+                        <a href="@Url.Action("Index", "Subject")" class="list-group-item">Subjects</a>
+                        <a href="@Url.Action("Index", "Grade")" class="list-group-item">Grades</a>
+                    </nav>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h6>Student Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="actions">
+                        <a href="@Url.Action("Create", "Student")" class="add-btn">+ Add Student</a>
+                 
+
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="teacher-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Class</th>
+                                    <th>Father</th>
+                                    <th>Mother</th>
+                                    <th>Birthdate</th>
+                                    <th>Address</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var s in Model)
+                                {
+                                    <tr>
+                                        <td>@s.id</td>
+                                        <td>@($"{s.first_name} {s.last_name}")</td>
+                                        <td>@s.class_name</td>
+                                        <td>@s.father_name</td>
+                                        <td>@s.mother_name</td>
+                                        <td>@(s.birthdate?.ToString("yyyy/MM/dd") ?? "N/A")</td>
+                                        <td>@s.address</td>
+                                        <td style="display:flex; gap:10px">
+                                            <a href="@Url.Action("Edit", "Student", new { id = s.id })">Edit</a>
+                                            <form asp-action="Delete" asp-controller="Student" method="post" onsubmit="return confirm('Are you sure?');">
+                                                <input type="hidden" name="id" value="@s.id" />
+                                                <button type="submit" class="btn btn-danger delete-btn">Delete</button>
+                                            </form>
+                                     
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

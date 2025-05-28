@@ -4,6 +4,7 @@ using System.Data;
 using Mindful.Models;
 using Mindful.DataAccess;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mindful.Controllers
 {
@@ -21,13 +22,13 @@ namespace Mindful.Controllers
             try
             {
                 var query = @"
-                    SELECT 
-                        g.studentsid, g.subjectsid, g.mark,
-                        s.first_name + ' ' + s.last_name AS student_name,
-                        sub.name AS subject_name
-                    FROM grades g
-                    LEFT JOIN students s ON g.studentsid = s.id
-                    LEFT JOIN subjects sub ON g.subjectsid = sub.id";
+            SELECT 
+                g.studentsid, g.subjectsid, g.mark,
+                s.first_name + ' ' + s.last_name AS student_name,
+                sub.name AS subject_name
+            FROM grades g
+            LEFT JOIN students s ON g.studentsid = s.id
+            LEFT JOIN subjects sub ON g.subjectsid = sub.id";
 
                 var dataTable = _dbHelper.ExecuteQuery(query);
 
@@ -39,11 +40,13 @@ namespace Mindful.Controllers
                     {
                         studentsid = Convert.ToInt32(row["studentsid"]),
                         subjectsid = Convert.ToInt32(row["subjectsid"]),
-                        mark = Convert.ToInt32(row["mark"])
+                        mark = Convert.ToInt32(row["mark"]),
+                        StudentName = row["student_name"].ToString(),
+                        SubjectName = row["subject_name"].ToString()
                     });
                 }
 
-                return View(grades);
+                return View(grades); // <-- Pass as model
             }
             catch (Exception ex)
             {
@@ -51,6 +54,7 @@ namespace Mindful.Controllers
                 return View("Error", ex);
             }
         }
+
 
         public IActionResult Create()
         {
@@ -97,9 +101,9 @@ namespace Mindful.Controllers
                 var query = "SELECT * FROM grades WHERE studentsid = @studentsid AND subjectsid = @subjectsid";
                 var parameters = new[]
                 {
-                    new SqlParameter("@studentsid", studentsid),
-                    new SqlParameter("@subjectsid", subjectsid)
-                };
+            new SqlParameter("@studentsid", studentsid),
+            new SqlParameter("@subjectsid", subjectsid)
+        };
 
                 var table = _dbHelper.ExecuteQuery(query, parameters);
 
@@ -114,6 +118,24 @@ namespace Mindful.Controllers
                     mark = Convert.ToInt32(row["mark"])
                 };
 
+                // Load dropdowns
+                var students = _dbHelper.ExecuteQuery("SELECT id, first_name + ' ' + last_name AS name FROM students");
+                var subjects = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects");
+
+                grade.StudentOptions = students.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
+
+                grade.SubjectOptions = subjects.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
+
                 return View(grade);
             }
             catch (Exception ex)
@@ -122,6 +144,7 @@ namespace Mindful.Controllers
                 return View("Error", ex);
             }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
