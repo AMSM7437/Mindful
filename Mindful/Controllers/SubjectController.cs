@@ -7,11 +7,11 @@ using System.Data.SqlClient;
 
 namespace Mindful.Controllers
 {
-    public class TeacherController : Controller
+    public class SubjectController : Controller
     {
         private readonly DbHelper _dbHelper;
 
-        public TeacherController(DbHelper dbHelper)
+        public SubjectController(DbHelper dbHelper)
         {
             _dbHelper = dbHelper;
         }
@@ -20,30 +20,33 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "SELECT t.id, t.first_name, t.last_name, t.email, t.birthdate, s.name AS subject_name FROM teachers t LEFT JOIN subjects s ON t.id = s.teachersid";
+                var query = @"
+                    SELECT 
+                        s.id, s.teachersid, s.name, s.passing_grade,
+                        t.first_name + ' ' + t.last_name AS teacher_name
+                    FROM subjects s
+                    LEFT JOIN teachers t ON s.teachersid = t.id";
+
                 var dataTable = _dbHelper.ExecuteQuery(query);
 
-                var teachers = new List<Teacher>();
+                var subjects = new List<Subject>();
 
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    teachers.Add(new Teacher
+                    subjects.Add(new Subject
                     {
                         id = Convert.ToInt32(row["id"]),
-                        first_Name = row["first_name"].ToString(),
-                        last_Name = row["last_name"].ToString(),
-                        email = row["email"].ToString(),
-                        birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"]),
-                        subject_Name = row["subject_name"].ToString()
+                        teachersid = Convert.ToInt32(row["teachersid"]),
+                        name = row["name"].ToString(),
+                        passing_Grade = Convert.ToInt32(row["passing_grade"])
                     });
-
                 }
 
-                return View(teachers);
+                return View(subjects);
             }
             catch (Exception ex)
             {
-                System.IO.File.WriteAllText("error.log", ex.ToString());
+                System.IO.File.AppendAllText("error.log", $"{DateTime.Now}: {ex}\n\n");
                 return View("Error", ex);
             }
         }
@@ -55,22 +58,24 @@ namespace Mindful.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Teacher teacher)
+        public IActionResult Create(Subject subject)
         {
             if (!ModelState.IsValid)
             {
-                return View(teacher);
+                return View(subject);
             }
 
             try
             {
-                var query = "INSERT INTO teachers (first_name, last_name, email, birthdate) VALUES (@first_name, @last_name, @email, @birthdate)";
+                var query = @"
+                    INSERT INTO subjects (teachersid, name, passing_grade)
+                    VALUES (@teachersid, @name, @passing_grade)";
+
                 var parameters = new[]
                 {
-                    new SqlParameter("@first_name", teacher.first_Name),
-                    new SqlParameter("@last_name", teacher.last_Name),
-                    new SqlParameter("@email", teacher.email),
-                    new SqlParameter("@birthdate", (object?)teacher.birthdate ?? DBNull.Value)
+                    new SqlParameter("@teachersid", subject.teachersid),
+                    new SqlParameter("@name", subject.name),
+                    new SqlParameter("@passing_grade", subject.passing_Grade)
                 };
 
                 _dbHelper.ExecuteNonQuery(query, parameters);
@@ -88,7 +93,7 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "SELECT * FROM teachers WHERE id = @id";
+                var query = "SELECT * FROM subjects WHERE id = @id";
                 var parameters = new[] { new SqlParameter("@id", id) };
                 var table = _dbHelper.ExecuteQuery(query, parameters);
 
@@ -96,16 +101,15 @@ namespace Mindful.Controllers
                     return NotFound();
 
                 var row = table.Rows[0];
-                var teacher = new Teacher
+                var subject = new Subject
                 {
                     id = Convert.ToInt32(row["id"]),
-                    first_Name = row["first_name"].ToString(),
-                    last_Name = row["last_name"].ToString(),
-                    email = row["email"].ToString(),
-                    birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"])
+                    teachersid = Convert.ToInt32(row["teachersid"]),
+                    name = row["name"].ToString(),
+                    passing_Grade = Convert.ToInt32(row["passing_grade"])
                 };
 
-                return View(teacher);
+                return View(subject);
             }
             catch (Exception ex)
             {
@@ -116,34 +120,31 @@ namespace Mindful.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Teacher teacher)
+        public IActionResult Edit(Subject subject)
         {
             if (!ModelState.IsValid)
             {
-                return View(teacher);
+                return View(subject);
             }
 
             try
             {
                 var query = @"
-                    UPDATE teachers 
-                    SET first_name = @first_name, 
-                        last_name = @last_name, 
-                        email = @email, 
-                        birthdate = @birthdate 
+                    UPDATE subjects
+                    SET teachersid = @teachersid,
+                        name = @name,
+                        passing_grade = @passing_grade
                     WHERE id = @id";
 
                 var parameters = new[]
                 {
-                    new SqlParameter("@first_name", teacher.first_Name),
-                    new SqlParameter("@last_name", teacher.last_Name),
-                    new SqlParameter("@email", teacher.email),
-                    new SqlParameter("@birthdate", (object?)teacher.birthdate ?? DBNull.Value),
-                    new SqlParameter("@id", teacher.id)
+                    new SqlParameter("@teachersid", subject.teachersid),
+                    new SqlParameter("@name", subject.name),
+                    new SqlParameter("@passing_grade", subject.passing_Grade),
+                    new SqlParameter("@id", subject.id)
                 };
 
                 _dbHelper.ExecuteNonQuery(query, parameters);
-
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -157,7 +158,7 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "DELETE FROM teachers WHERE id = @id";
+                var query = "DELETE FROM subjects WHERE id = @id";
                 var parameters = new[] { new SqlParameter("@id", id) };
                 _dbHelper.ExecuteNonQuery(query, parameters);
 

@@ -63,17 +63,22 @@
                                         <tbody >
                                         @foreach (var teacher in Model)
                                         {
-                                                    <tr>
-                                                        <td>@teacher.id</td>
-                                                        <td>@($"{teacher.first_Name} {teacher.last_Name}")</td>
-                                                        <td>@teacher.subject_Name </td>
-                                                        <td>@teacher.email</td>
-                                                        <td>@(teacher.birthdate?.ToString("yyyy/MM/dd") ?? "N/A")</td>
-                                                    </tr>
+                                            <tr>
+                                                <td>@teacher.id</td>
+                                                <td>@($"{teacher.first_Name} {teacher.last_Name}")</td>
+                                          
+                                                <td>@teacher.email</td>
+                                                <td>@(teacher.birthdate?.ToString("yyyy/MM/dd") ?? "N/A")</td>
+@*                                                 <td>
+                                                    <a href="@Url.Action("Edit", "Teacher", new { id = teacher.id })">
+                                                        <img src="~/icons/edit-icon.png" class="edit-icon" alt="Edit" />
+                                                    </a>
+                                                </td> *@
+                                            </tr>
                                         }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                </table>
+                            </div>
                         }
                     </div>
                 </div>
