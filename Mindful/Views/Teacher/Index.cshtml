@@ -66,6 +66,7 @@
                                         {
                                             <tr>
                                                 <td>@teacher.id</td>
+
                                                 <td>@($"{teacher.first_Name} {teacher.last_Name}")</td>
                                           
                                                 <td>@teacher.email</td>
@@ -79,6 +80,64 @@
                                         }
                                     </tbody>
                                 </table>
+                                <div class="form-group-row">
+                                    <div class="form-group">
+                                        <label for="passingGradeSelect">Passing Grade</label>
+                                        <select id="passingGradeSelect" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="A">A</option>
+                                            <option value="B">B</option>
+                                            <option value="C">C</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group invalid">
+                                        <label for="passingGradeInput">Passing Grade</label>
+                                        <input type="text" id="passingGradeInput" class="form-control" value="Thing" />
+                                        <span class="error-icon">&#10006;</span>
+                                        <small class="error-msg">error msg</small>
+                                    </div>
+                                </div>
+
+                                <style>
+                                    .form-group-row {
+                                        display: flex;
+                                        gap: 1rem;
+                                        margin-top: 20px;
+                                    }
+
+                                    .form-group {
+                                        display: flex;
+                                        flex-direction: column;
+                                    }
+
+                                        .form-group label {
+                                            font-weight: bold;
+                                            margin-bottom: 5px;
+                                        }
+
+                                    .form-control {
+                                        padding: 8px;
+                                        border: 1px solid #ccc;
+                                        border-radius: 4px;
+                                    }
+
+                                    .form-group.invalid .form-control {
+                                        border-color: red;
+                                    }
+
+                                    .error-icon {
+                                        color: red;
+                                        font-size: 1.2em;
+                                        margin-top: 5px;
+                                    }
+
+                                    .error-msg {
+                                        color: red;
+                                        font-size: 0.8em;
+                                        margin-top: 2px;
+                                    }
+                                </style>
+e
                             </div>
                         }
                     </div>

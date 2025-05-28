@@ -7,11 +7,11 @@ using System.Data.SqlClient;
 
 namespace Mindful.Controllers
 {
-    public class ClassController : Controller
+    public class SubjectController : Controller
     {
         private readonly DbHelper _dbHelper;
 
-        public ClassController(DbHelper dbHelper)
+        public SubjectController(DbHelper dbHelper)
         {
             _dbHelper = dbHelper;
         }
@@ -20,21 +20,29 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "SELECT id, name FROM classes";
+                var query = @"
+                    SELECT 
+                        s.id, s.teachersid, s.name, s.passing_grade,
+                        t.first_name + ' ' + t.last_name AS teacher_name
+                    FROM subjects s
+                    LEFT JOIN teachers t ON s.teachersid = t.id";
+
                 var dataTable = _dbHelper.ExecuteQuery(query);
 
-                var classes = new List<Class>();
+                var subjects = new List<Subject>();
 
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    classes.Add(new Class
+                    subjects.Add(new Subject
                     {
-                        Id = Convert.ToInt32(row["id"]),
-                        Name = row["name"].ToString()
+                        id = Convert.ToInt32(row["id"]),
+                        teachersid = Convert.ToInt32(row["teachersid"]),
+                        name = row["name"].ToString(),
+                        passing_Grade = Convert.ToInt32(row["passing_grade"])
                     });
                 }
 
-                return View(classes);
+                return View(subjects);
             }
             catch (Exception ex)
             {
@@ -50,19 +58,24 @@ namespace Mindful.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Class cls)
+        public IActionResult Create(Subject subject)
         {
             if (!ModelState.IsValid)
             {
-                return View(cls);
+                return View(subject);
             }
 
             try
             {
-                var query = "INSERT INTO classes (name) VALUES (@name)";
+                var query = @"
+                    INSERT INTO subjects (teachersid, name, passing_grade)
+                    VALUES (@teachersid, @name, @passing_grade)";
+
                 var parameters = new[]
                 {
-                    new SqlParameter("@name", cls.Name)
+                    new SqlParameter("@teachersid", subject.teachersid),
+                    new SqlParameter("@name", subject.name),
+                    new SqlParameter("@passing_grade", subject.passing_Grade)
                 };
 
                 _dbHelper.ExecuteNonQuery(query, parameters);
@@ -80,7 +93,7 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "SELECT * FROM classes WHERE id = @id";
+                var query = "SELECT * FROM subjects WHERE id = @id";
                 var parameters = new[] { new SqlParameter("@id", id) };
                 var table = _dbHelper.ExecuteQuery(query, parameters);
 
@@ -88,13 +101,15 @@ namespace Mindful.Controllers
                     return NotFound();
 
                 var row = table.Rows[0];
-                var cls = new Class
+                var subject = new Subject
                 {
-                    Id = Convert.ToInt32(row["id"]),
-                    Name = row["name"].ToString()
+                    id = Convert.ToInt32(row["id"]),
+                    teachersid = Convert.ToInt32(row["teachersid"]),
+                    name = row["name"].ToString(),
+                    passing_Grade = Convert.ToInt32(row["passing_grade"])
                 };
 
-                return View(cls);
+                return View(subject);
             }
             catch (Exception ex)
             {
@@ -105,20 +120,28 @@ namespace Mindful.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Class cls)
+        public IActionResult Edit(Subject subject)
         {
             if (!ModelState.IsValid)
             {
-                return View(cls);
+                return View(subject);
             }
 
             try
             {
-                var query = "UPDATE classes SET name = @name WHERE id = @id";
+                var query = @"
+                    UPDATE subjects
+                    SET teachersid = @teachersid,
+                        name = @name,
+                        passing_grade = @passing_grade
+                    WHERE id = @id";
+
                 var parameters = new[]
                 {
-                    new SqlParameter("@name", cls.Name),
-                    new SqlParameter("@id", cls.Id)
+                    new SqlParameter("@teachersid", subject.teachersid),
+                    new SqlParameter("@name", subject.name),
+                    new SqlParameter("@passing_grade", subject.passing_Grade),
+                    new SqlParameter("@id", subject.id)
                 };
 
                 _dbHelper.ExecuteNonQuery(query, parameters);
@@ -135,7 +158,7 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "DELETE FROM classes WHERE id = @id";
+                var query = "DELETE FROM subjects WHERE id = @id";
                 var parameters = new[] { new SqlParameter("@id", id) };
                 _dbHelper.ExecuteNonQuery(query, parameters);
 
