@@ -16,6 +16,27 @@
                 <div class="card-body">
                     <div class="actions">
                         <a href="@Url.Action("Create", "Grade")" class="add-btn">+ Add Grade</a>
+                        <form method="get" class="form-inline mb-3">
+                            <select name="classId" class="form-control mr-2">
+                                <option value="">All Classes</option>
+                                @foreach (var item in (List<SelectListItem>)ViewBag.ClassFilter)
+                                {
+                                    <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+                                }
+                            </select>
+
+                            <select name="subjectId" class="form-control mr-2">
+                                <option value="">All Subjects</option>
+                                @foreach (var item in (List<SelectListItem>)ViewBag.SubjectFilter)
+                                {
+                                    <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+                                }
+                            </select>
+
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <a href="@Url.Action("Index", "Grade")" class="btn btn-secondary ml-2">Clear</a>
+                        </form>
+
                     </div>
 
                     <div class="table-wrapper">

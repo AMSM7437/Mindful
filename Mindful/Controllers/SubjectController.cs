@@ -70,15 +70,15 @@ namespace Mindful.Controllers
             try
             {
                 var query = @"
-                    INSERT INTO subjects (teachersid, name, passing_grade)
-                    VALUES (@teachersid, @name, @passing_grade)";
+            INSERT INTO subjects (teachersid, name, passing_grade)
+            VALUES (@teachersid, @name, @passing_grade)";
 
                 var parameters = new[]
                 {
-                    new SqlParameter("@teachersid", subject.teachersid),
-                    new SqlParameter("@name", subject.name),
-                    new SqlParameter("@passing_grade", subject.passing_Grade)
-                };
+            new SqlParameter("@teachersid", (object?)subject.teachersid ?? DBNull.Value),
+            new SqlParameter("@name", subject.name),
+            new SqlParameter("@passing_grade", subject.passing_Grade)
+        };
 
                 _dbHelper.ExecuteNonQuery(query, parameters);
 

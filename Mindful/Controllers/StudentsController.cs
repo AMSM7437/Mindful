@@ -17,16 +17,16 @@ namespace Mindful.Controllers
             _dbHelper = dbHelper;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string addressFilter)
         {
             try
             {
                 var query = @"
-                    SELECT 
-                        s.id, s.classesid, s.first_name, s.last_name, s.father_name, 
-                        s.mother_name, s.birthdate, s.address, c.name AS class_name
-                    FROM students s
-                    LEFT JOIN classes c ON s.classesid = c.id";
+            SELECT 
+                s.id, s.classesid, s.first_name, s.last_name, s.father_name, 
+                s.mother_name, s.birthdate, s.address, c.name AS class_name
+            FROM students s
+            LEFT JOIN classes c ON s.classesid = c.id";
 
                 var dataTable = _dbHelper.ExecuteQuery(query);
 
@@ -34,7 +34,7 @@ namespace Mindful.Controllers
 
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    students.Add(new Students
+                    var student = new Students
                     {
                         id = Convert.ToInt32(row["id"]),
                         classesid = Convert.ToInt32(row["classesid"]),
@@ -44,9 +44,13 @@ namespace Mindful.Controllers
                         mother_name = row["mother_name"].ToString(),
                         birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"]),
                         address = Convert.ToInt32(row["address"]),
-                        class_name = row["class_name"]?.ToString() // ✅ THIS IS WHAT WAS MISSING
-                    });
+                        class_name = row["class_name"]?.ToString()
+                    };
 
+                    if (string.IsNullOrEmpty(addressFilter) || student.address.ToString().Contains(addressFilter))
+                    {
+                        students.Add(student);
+                    }
                 }
 
                 return View(students);
@@ -58,10 +62,23 @@ namespace Mindful.Controllers
             }
         }
 
+
         public IActionResult Create()
         {
-            return View();
+            var student = new Students();
+
+            // Optional: If you're using a dropdown for class selection
+            var classData = _dbHelper.ExecuteQuery("SELECT id, name FROM classes");
+            student.ClassOptions = classData.AsEnumerable()
+                .Select(r => new SelectListItem
+                {
+                    Value = r["id"].ToString(),
+                    Text = r["name"].ToString()
+                }).ToList();
+
+            return View(student); // ✅ Model is no longer null
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

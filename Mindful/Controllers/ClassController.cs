@@ -135,9 +135,18 @@ namespace Mindful.Controllers
         {
             try
             {
+                // Check if students reference this class
+                var checkQuery = "SELECT COUNT(*) FROM students WHERE classesid = @id";
+                var count = (int)_dbHelper.ExecuteScalar(checkQuery, new[] { new SqlParameter("@id", id) });
+
+                if (count > 0)
+                {
+                    TempData["Error"] = "Cannot delete this class because students are assigned to it.";
+                    return RedirectToAction("Index");
+                }
+
                 var query = "DELETE FROM classes WHERE id = @id";
-                var parameters = new[] { new SqlParameter("@id", id) };
-                _dbHelper.ExecuteNonQuery(query, parameters);
+                _dbHelper.ExecuteNonQuery(query, new[] { new SqlParameter("@id", id) });
 
                 return RedirectToAction("Index");
             }
@@ -147,5 +156,6 @@ namespace Mindful.Controllers
                 return Content($"Error: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
     }
 }

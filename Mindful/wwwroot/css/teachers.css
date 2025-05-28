@@ -295,3 +295,99 @@ input.form-control {
         font-weight: bold;
         color: #a00;
     }
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Input, Select, and Textarea Styling */
+input.form-control,
+select.form-control,
+textarea.form-control {
+    padding: 12px 14px;
+    border: 1px solid #ccd0d5;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+    input.form-control:focus,
+    select.form-control:focus,
+    textarea.form-control:focus {
+        border-color: #3e7d89;
+        outline: none;
+        box-shadow: 0 0 5px rgba(62, 125, 137, 0.3);
+    }
+
+/* Form Labels */
+.form-group label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c2e35;
+    margin-bottom: 8px;
+}
+
+/* Buttons */
+button,
+.btn {
+    font-size: 14px;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #244248;
+    color: white;
+    border: none;
+}
+
+    .btn-primary:hover {
+        background-color: #1c3f45;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+.delete-btn {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .delete-btn:hover {
+        background-color: #a93226;
+    }
+
+/* Responsive Form Layout */
+@media (max-width: 768px) {
+    form {
+        gap: 16px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    input.form-control,
+    select.form-control,
+    textarea.form-control {
+        font-size: 14px;
+    }
+}

@@ -19,7 +19,8 @@
                         <a href="@Url.Action("Index", "Teacher")" class="list-group-item active">Teachers</a>
                         <a href="@Url.Action("Index", "Student")" class="list-group-item">Student</a>
                         <a href="@Url.Action("Index", "Subject")" class="list-group-item">Subjects</a>
-                        <a href="#" class="list-group-item">Statistics</a>
+                        <a href="#" class="list-group-item">Grades</a>
+                        <a href="@Url.Action("Index", "Class")" class="list-group-item">Classes</a>
                     </nav>
                 </div>
             </div>
@@ -31,7 +32,9 @@
                     <h6>@ViewBag.Title</h6>
                 </div>
                 <div class="card-body">
-                    <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+                    
+                    <form asp-action="Create" method="post">
+
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.id)
 

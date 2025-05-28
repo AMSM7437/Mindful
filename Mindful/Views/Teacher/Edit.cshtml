@@ -19,7 +19,8 @@
                             <a href="@Url.Action("Index", "Teacher")" class="list-group-item active">Teachers</a>
                         <a href="@Url.Action("Index", "Student")" class="list-group-item">Student</a>
                         <a href="@Url.Action("Index", "Subject")" class="list-group-item">Subjects</a>
-                            <a href="#" class="list-group-item">Statistics</a>
+                            <a href="#" class="list-group-item">Grades</a>
+                        <a href="@Url.Action("Index", "Class")" class="list-group-item">Classes</a>
                         </nav>
                     </div>
                 </div>
@@ -72,15 +73,16 @@
                             <div class="form-group">
                                 <label>Assigned Subjects</label>
                                 <div id="assigned-subjects" class="subject-tags">
-                                    @for (int i = 0; i < Model.AssignedSubjectOptions?.Count; i++)
-                                    {
-                                        var subject = Model.AssignedSubjectOptions[i];
-                                        <span class="tag">
-                                            @subject.Text
-                                            <button type="button" class="remove-btn" onclick="removeSubject(@subject.Value)">✕</button>
-                                            <input type="hidden" name="AssignedSubjectIds" value="@subject.Value" />
-                                        </span>
-                                    }
+                                @for (int i = 0; i < Model.AssignedSubjectOptions?.Count; i++)
+                                {
+                                    var subject = Model.AssignedSubjectOptions[i];
+                                    <span class="tag">
+                                        @subject.Text
+                                        <button type="button" class="remove-btn" onclick="removeSubject(@subject.Value)">✕</button>
+                                        <input type="hidden" name="AssignedSubjectIds" value="@subject.Value" />
+                                    </span>
+                                }
+
                                 </div>
                             </div>
 

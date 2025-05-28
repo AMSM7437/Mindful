@@ -19,6 +19,7 @@
                         <a href="#" class="list-group-item active">Student</a>
                         <a href="@Url.Action("Index", "Subject")" class="list-group-item">Subjects</a>
                         <a href="@Url.Action("Index", "Grade")" class="list-group-item">Grades</a>
+                        <a href="@Url.Action("Index", "Class")" class="list-group-item">Classes</a>
                     </nav>
                 </div>
             </div>
@@ -32,7 +33,17 @@
                 <div class="card-body">
                     <div class="actions">
                         <a href="@Url.Action("Create", "Student")" class="add-btn">+ Add Student</a>
-                 
+                        @{
+                            var currentFilter = ViewContext.HttpContext.Request.Query["addressFilter"].ToString();
+                        }
+
+                        <form method="get" asp-action="Index" class="form-inline mb-3">
+                            <input type="text" name="addressFilter" class="form-control mr-2" placeholder="Enter address..." value="@currentFilter" />
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <a href="@Url.Action("Index", "Student")" class="btn btn-secondary ml-2">Clear</a>
+                        </form>
+
+
 
                     </div>
 

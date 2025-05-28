@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Mindful.Models.Class>
+@{
+    ViewBag.Title = "Classes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="teachers-container">
+    <div class="teachers-layout">
+        @Html.Partial("_SidebarPartial", "Classes")
+
+        <main class="content">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h6>Class List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="actions mb-3">
+                        <a href="@Url.Action("Create", "Class")" class="add-btn">+ Add Class</a>
+                    </div>
+                    <table class="teacher-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model)
+                            {
+                                <tr>
+                                    <td>@c.Id</td>
+                                    <td>@c.Name</td>
+                                    <td style="display:flex; gap:10px">
+                                        <a href="@Url.Action("Edit", "Class", new { id = c.Id })">Edit</a>
+                                        <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure?');">
+                                            <input type="hidden" name="id" value="@c.Id" />
+                                            <button class="btn btn-danger delete-btn">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

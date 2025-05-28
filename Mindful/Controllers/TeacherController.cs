@@ -71,21 +71,21 @@ namespace Mindful.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Teacher teacher)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(teacher);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(teacher);
+            //}
 
             try
             {
                 var query = "INSERT INTO teachers (first_name, last_name, email, birthdate) VALUES (@first_name, @last_name, @email, @birthdate)";
                 var parameters = new[]
                 {
-                    new SqlParameter("@first_name", teacher.first_Name),
-                    new SqlParameter("@last_name", teacher.last_Name),
-                    new SqlParameter("@email", teacher.email),
-                    new SqlParameter("@birthdate", (object?)teacher.birthdate ?? DBNull.Value)
-                };
+            new SqlParameter("@first_name", teacher.first_Name),
+            new SqlParameter("@last_name", teacher.last_Name),
+            new SqlParameter("@email", teacher.email),
+            new SqlParameter("@birthdate", (object?)teacher.birthdate ?? DBNull.Value)
+        };
 
                 _dbHelper.ExecuteNonQuery(query, parameters);
 
@@ -97,6 +97,7 @@ namespace Mindful.Controllers
                 return Content($"Error: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
 
         public IActionResult Edit(int id)
         {
@@ -131,9 +132,10 @@ namespace Mindful.Controllers
                     }).ToList();
 
                 // Multi-select: Currently assigned subjects
-                var assignedSubjects = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects WHERE teachersid IS NULL", new[] {
-            new SqlParameter("@id", id)
-        });
+                var assignedSubjects = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects WHERE teachersid = @id", new[] {
+    new SqlParameter("@id", id)
+});
+
 
                 teacher.AssignedSubjectOptions = assignedSubjects.AsEnumerable()
                     .Select(r => new SelectListItem
@@ -213,13 +215,7 @@ namespace Mindful.Controllers
                 new SqlParameter("@id", sid)
             });
                 }
-                foreach (var sid in submittedIds)
-                {
-                    _dbHelper.ExecuteNonQuery("UPDATE subjects SET teachersid = @tid WHERE id = @id", new[] {
-        new SqlParameter("@tid", teacher.id),
-        new SqlParameter("@id", sid)
-    });
-                }
+            
                 // Assign new subject from dropdown if provided and not already assigned
                 if (teacher.SelectedSubjectId.HasValue && !submittedIds.Contains(teacher.SelectedSubjectId.Value))
                 {

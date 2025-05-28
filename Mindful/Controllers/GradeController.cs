@@ -17,7 +17,7 @@ namespace Mindful.Controllers
             _dbHelper = dbHelper;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? classId, int? subjectId)
         {
             try
             {
@@ -25,15 +25,23 @@ namespace Mindful.Controllers
             SELECT 
                 g.studentsid, g.subjectsid, g.mark,
                 s.first_name + ' ' + s.last_name AS student_name,
-                sub.name AS subject_name
+                sub.name AS subject_name,
+                s.classesid
             FROM grades g
             LEFT JOIN students s ON g.studentsid = s.id
-            LEFT JOIN subjects sub ON g.subjectsid = sub.id";
+            LEFT JOIN subjects sub ON g.subjectsid = sub.id
+            WHERE (@classId IS NULL OR s.classesid = @classId)
+              AND (@subjectId IS NULL OR g.subjectsid = @subjectId)";
 
-                var dataTable = _dbHelper.ExecuteQuery(query);
+                var parameters = new[]
+                {
+            new SqlParameter("@classId", (object?)classId ?? DBNull.Value),
+            new SqlParameter("@subjectId", (object?)subjectId ?? DBNull.Value)
+        };
+
+                var dataTable = _dbHelper.ExecuteQuery(query, parameters);
 
                 var grades = new List<Grade>();
-
                 foreach (DataRow row in dataTable.Rows)
                 {
                     grades.Add(new Grade
@@ -46,7 +54,25 @@ namespace Mindful.Controllers
                     });
                 }
 
-                return View(grades); // <-- Pass as model
+                // Populate dropdowns
+                var classData = _dbHelper.ExecuteQuery("SELECT id, name FROM classes");
+                var subjectData = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects");
+
+                ViewBag.ClassFilter = classData.AsEnumerable().Select(r => new SelectListItem
+                {
+                    Value = r["id"].ToString(),
+                    Text = r["name"].ToString(),
+                    Selected = classId.HasValue && classId.ToString() == r["id"].ToString()
+                }).ToList();
+
+                ViewBag.SubjectFilter = subjectData.AsEnumerable().Select(r => new SelectListItem
+                {
+                    Value = r["id"].ToString(),
+                    Text = r["name"].ToString(),
+                    Selected = subjectId.HasValue && subjectId.ToString() == r["id"].ToString()
+                }).ToList();
+
+                return View(grades);
             }
             catch (Exception ex)
             {
@@ -58,7 +84,32 @@ namespace Mindful.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            try
+            {
+                var students = _dbHelper.ExecuteQuery("SELECT id, first_name + ' ' + last_name AS name FROM students");
+                var subjects = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects");
+
+                ViewBag.StudentOptions = students.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
+
+                ViewBag.SubjectOptions = subjects.AsEnumerable()
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r["id"].ToString(),
+                        Text = r["name"].ToString()
+                    }).ToList();
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.AppendAllText("error.log", $"{DateTime.Now}: {ex}\n\n");
+                return View("Error", ex);
+            }
         }
 
         [HttpPost]

@@ -1,11 +1,31 @@
-
 @model Mindful.Models.Subject
 @{
     ViewBag.Title = "Edit Subject";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="teachers-container">
     <div class="teachers-layout">
+
+        <aside class="sidebar">
+            <div class="drawer-card shadow">
+                <div class="drawer-Header">
+                    <p style="color:white; font-size:24px">Mindful</p>
+                    <div class="drawer-divider" style="margin-top : 20px ; margin-bottom : 20px"></div>
+                </div>
+                <div class="drawer-card-body">
+                    <nav class="list-group">
+                        <a href="@Url.Action("Index", "Home")" class="list-group-item">Dashboard</a>
+                        <a href="@Url.Action("Index", "Teacher")" class="list-group-item">Teachers</a>
+                        <a href="@Url.Action("Index", "Student")" class="list-group-item">Student</a>
+                        <a href="#" class="list-group-item active">Subjects</a>
+                        <a href="@Url.Action("Index", "Grade")" class="list-group-item">Grades</a>
+                        <a href="@Url.Action("Index", "Class")" class="list-group-item">Classes</a>
+                    </nav>
+                </div>
+            </div>
+        </aside>
+
         <main class="content">
             <div class="card shadow">
                 <div class="card-header">
@@ -15,17 +35,27 @@
                     <form asp-action="Edit" method="post">
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(m => m.id)
+
                         <div class="form-group">
                             <label asp-for="name"></label>
                             <input asp-for="name" class="form-control" />
                             <span asp-validation-for="name" class="text-danger"></span>
                         </div>
+
                         <div class="form-group">
                             <label asp-for="passing_Grade"></label>
-                            <input asp-for="passing_Grade" class="form-control" />
+                            <input asp-for="passing_Grade" class="form-control" type="number" min="0" />
                             <span asp-validation-for="passing_Grade" class="text-danger"></span>
                         </div>
-                        <div class="actions">
+
+                        <div class="form-group">
+                            <label asp-for="teachersid">Assign to Teacher (optional)</label>
+                            <select asp-for="teachersid" class="form-control" asp-items="ViewBag.Teachers">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+
+                        <div class="actions mt-3">
                             <button type="submit" class="add-btn">Save</button>
                             <a href="@Url.Action("Index", "Subject")" class="btn btn-secondary">Cancel</a>
                         </div>
@@ -35,3 +65,7 @@
         </main>
     </div>
 </div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
