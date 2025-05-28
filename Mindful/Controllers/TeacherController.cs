@@ -21,7 +21,7 @@ namespace Mindful.Controllers
         {
             try
             {
-                var query = "SELECT id, first_name, last_name, email, birthdate FROM teachers";
+                var query = "SELECT t.id, t.first_name, t.last_name, t.email, t.birthdate, s.name AS subject_name FROM teachers t LEFT JOIN subjects s ON t.id = s.teachersid";
                 var dataTable = _dbHelper.ExecuteQuery(query);
 
                 var teachers = new List<Teacher>();
@@ -34,8 +34,10 @@ namespace Mindful.Controllers
                         first_Name = row["first_name"].ToString(),
                         last_Name = row["last_name"].ToString(),
                         email = row["email"].ToString(),
-                        birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"])
+                        birthdate = row["birthdate"] == DBNull.Value ? null : Convert.ToDateTime(row["birthdate"]),
+                        subject_Name = row["subject_name"].ToString()
                     });
+
                 }
 
                 return View(teachers);

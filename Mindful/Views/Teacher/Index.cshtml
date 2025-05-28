@@ -4,30 +4,28 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <div class="row">
- 
-        <div class="col-md-3">
+<div class="teachers-container">
+    <div class="teachers-layout">
+
+        <aside class="sidebar">
             <div class="drawer-card shadow">
                 <div class="drawer-Header">
                     <p style="color:white; font-size:24px">Mindful</p>
-                    <div class="drawer-divider"></div>
+                    <div class="drawer-divider" style="margin-top : 20px ; margin-bottom : 20px"></div>
                 </div>
                 <div class="drawer-card-body">
-                    <div class="list-group">
-         
+                    <nav class="list-group">
                         <a href="@Url.Action("Index", "Home")" class="list-group-item">Dashboard</a>
                         <a href="#" class="list-group-item active">Teachers</a>
                         <a href="#" class="list-group-item">Student</a>
                         <a href="#" class="list-group-item">Courses</a>
                         <a href="#" class="list-group-item">Statistics</a>
-                    </div>
+                    </nav>
                 </div>
             </div>
-        </div>
+        </aside>
 
-  
-        <div class="col-md-9">
+        <main class="content">
             <div class="card shadow">
                 <div class="card-header">
                     <h6>Teacher Information</h6>
@@ -36,56 +34,50 @@
                     <div class="table-responsive">
                         <div class="actions">
                             <a href="@Url.Action("Create", "Teacher")" class="add-btn">+ Add Teacher</a>
-                       @*      <input type="text" placeholder="Search..." class="search-box" />
-                            <button class="filter-btn">Filter</button> *@
+                            @* Optional Search + Filter
+                            <input type="text" placeholder="Search..." class="search-box" />
+                            <button class="filter-btn">Filter</button>
+                            *@
                         </div>
 
                         @if (Model == null || !Model.Any())
                         {
-                            <div class="alert alert-info">
-                                No teachers found in the database.
-                            </div>
+                                <div class="alert alert-info">
+                                    No teachers found in the database.
+                                </div>
                         }
                         else
                         {
+                                <div class="table-wrapper">
+                                    <table class="teacher-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Teacher ID</th>
+                                                    <th>Name</th>      <th>Subject</th>
+                                                <th>Email</th>
+                                                <th>Date of Birth</th>
+                                          
+                                            </tr>
+                                        </thead>
 
-                            <div class="table-wrapper">
-                                <table class="teacher-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Teacher ID</th>
-                                            <th>Name</th>
-                                            
-                                            <th>Email</th>
-                                            <th>Date of Birth</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                        <tbody >
                                         @foreach (var teacher in Model)
                                         {
-                                            <tr>
-                                                <td>@teacher.id</td>
-                                                <td>@($"{teacher.first_Name} {teacher.last_Name}")</td>
-                                          
-                                                <td>@teacher.email</td>
-                                                <td>@(teacher.birthdate?.ToString("yyyy/MM/dd") ?? "N/A")</td>
-@*                                                 <td>
-                                                    <a href="@Url.Action("Edit", "Teacher", new { id = teacher.id })">
-                                                        <img src="~/icons/edit-icon.png" class="edit-icon" alt="Edit" />
-                                                    </a>
-                                                </td> *@
-                                            </tr>
+                                                    <tr>
+                                                        <td>@teacher.id</td>
+                                                        <td>@($"{teacher.first_Name} {teacher.last_Name}")</td>
+                                                        <td>@teacher.subject_Name </td>
+                                                        <td>@teacher.email</td>
+                                                        <td>@(teacher.birthdate?.ToString("yyyy/MM/dd") ?? "N/A")</td>
+                                                    </tr>
                                         }
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
                         }
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 </div>
-
-

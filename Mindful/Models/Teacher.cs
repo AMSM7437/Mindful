@@ -1,4 +1,6 @@
-﻿namespace Mindful.Models
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Mindful.Models
 {
     public class Teacher
     {
@@ -7,5 +9,9 @@
         public string last_Name { get; set; }
         public string email { get; set; }
         public DateTime? birthdate { get; set; }
+
+        public string? subject_Name { get; set; }
+
+    
     }
 }

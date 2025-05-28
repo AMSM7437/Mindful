@@ -13,14 +13,6 @@ body {
     line-height: 1.6;
 }
 
-.container {
-    width: 100dvw;
-    height :100dvh;
-    margin : 0;
-    padding: 0 ;
-    overflow : hidden;
-}
-
 
 .breadcrumb {
    
@@ -69,7 +61,7 @@ body {
     .card-header h6 {
         font-size: 16px;
         font-weight: 600;
-        color: #4a6baf;
+        color: #244248;
         margin: 0;
     }
 

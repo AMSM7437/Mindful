@@ -4,27 +4,28 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <div class="row">
+<div class="teachers-container">
+    <div class="teachers-layout">
+
         <!-- Sidebar -->
-        <div class="col-md-3">
+        <aside class="sidebar">
             <div class="drawer-card shadow">
                 <div class="drawer-Header">
                     <p style="color:white; font-size:24px">Mindful</p>
-                    <div class="drawer-divider"></div>
+                    <div class="drawer-divider" style="margin-top : 20px ; margin-bottom : 20px"></div>
                 </div>
                 <div class="drawer-card-body">
-                    <div class="list-group">
+                    <nav class="list-group">
                         <a href="#" class="list-group-item active">Dashboard</a>
                         <a href="@Url.Action("Index", "Teacher")" class="list-group-item">Teachers</a>
-
+                    
                         <a href="#" class="list-group-item">Student</a>
                         <a href="#" class="list-group-item">Courses</a>
                         <a href="#" class="list-group-item">Statistics</a>
-                    </div>
+                    </nav>
                 </div>
             </div>
-        </div>
+        </aside>
 
         <!-- Main Content -->
 

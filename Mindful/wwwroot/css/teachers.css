@@ -1,17 +1,164 @@
-﻿.teachers-container {
-    font-family: 'Segoe UI', sans-serif;
+﻿/* === RESET AND BASE STYLES === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #E4E9EA;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* === CARD COMPONENTS === */
+.card {
+    background: white;
+  
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+    .card-header h6 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #244248;
+        margin: 0;
+    }
+
+.card-body {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* === DRAWER SIDEBAR === */
+.drawer-card {
+    background: #244248;
+    height: 100dvh;
+    padding-top: 20px;
+    justify-content : center;
+  
+    display : flex; 
+    flex-direction : column ; 
+}
+
+.drawer-Header {
+    width: 100%;
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    color: white;
+   
+}
+
+.drawer-divider {
+    width: 80%;
+    height: 1px;
+    background: #f0f0f0;
+    
+    margin : 0 auto;
+   
+
+}
+
+.drawer-card-body {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+/* === NAVIGATION LINKS === */
+.list-group {
+    width: 100%;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    background-color: #244248;
+    color: white;
+    margin-bottom: 20px;
+    transition: background 0.3s ease;
+    padding: 10px;
+    border: none;
+
+}
+
+    .list-group-item:hover {
+        background-color: #2e5e65;
+        color: white;
+    }
+
+    .list-group-item.active {
+        background-color: #3e7d89;
+    }
+
+.teachers-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+ 
     color: #2c2c2c;
 }
 
-.header h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
+.teachers-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.content {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    margin-top: 15px;
+    height: calc(100vh - 40px); 
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .teachers-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+}
+@media (max-width: 768px) {
+    .teacher-table th, .teacher-table td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .add-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+}
+
 
 .actions {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 10px;
 }
@@ -24,95 +171,73 @@
     border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
+    white-space: nowrap;
 }
 
-.search-box {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-.filter-btn {
-    background-color: #2d4f58;
-    color: white;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-}
-
-.tabs {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0;
-}
-
-.tab {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f8f8f8;
-    cursor: pointer;
-}
-
-    .tab.active {
-        background-color: #e0e0e0;
-        font-weight: bold;
+    .add-btn:hover {
+        color: white;
     }
-
-.subheader {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 15px;
-}
 
 .table-wrapper {
+    width: 100%;
     overflow-x: auto;
-}
+    max-height: 890px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
 
+}
 .teacher-table {
     width: 100%;
+    height : 100%;
     border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  
 }
-
+    .teacher-table thead{
+        position: sticky;
+        top: 0;
+    }
     .teacher-table th,
     .teacher-table td {
-        padding: 12px 16px;
-        border-bottom: 1px solid #e0e0e0;
+        padding: 12px 15px;
         text-align: left;
-        vertical-align: middle;
+        border: 1px solid #ddd;
+
     }
 
-    .teacher-table th {
-        background-color: #f0f4f7;
-        font-weight: 600;
+    .teacher-table thead {
+        background-color: #f8f9fa;
     }
 
-    .teacher-table .wide-subject {
-        width: 250px;
-        white-space: normal;
+    .teacher-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
     }
 
-.edit-icon {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    .teacher-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+/* Make sure the card-body allows flexible height */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+        
 }
 
-    .edit-icon:hover {
-        opacity: 1;
-    }
-
-.no-data {
-    padding: 20px;
-    color: #888;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
+/* Give table-wrapper a fixed height inside the card-body */
+.table-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #ccc;
     border-radius: 8px;
+    max-height: 600px; /* Or use 100% if container is sized */
+}
+
+/* Ensure sticky headers are styled correctly */
+.teacher-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
 }
