@@ -4,6 +4,7 @@ using System.Data;
 using Mindful.Models;
 using Mindful.DataAccess;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mindful.Controllers
 {
@@ -55,8 +56,37 @@ namespace Mindful.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            try
+            {
+                var query = "SELECT id, ISNULL(first_name, '') + ' ' + ISNULL(last_name, '') AS full_name FROM teachers";
+
+                var table = _dbHelper.ExecuteQuery(query);
+                var teachers = new List<SelectListItem>();
+
+                foreach (DataRow row in table.Rows)
+                {
+                    var name = row["full_name"]?.ToString()?.Trim();
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        teachers.Add(new SelectListItem
+                        {
+                            Value = row["id"].ToString(),
+                            Text = name
+                        });
+                    }
+                }
+
+                ViewBag.Teachers = teachers;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.AppendAllText("error.log", $"{DateTime.Now}: {ex}\n\n");
+                return View("Error", ex);
+            }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

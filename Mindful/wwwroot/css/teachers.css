@@ -244,7 +244,9 @@ body {
 .form-group {
     margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items :center;
+    gap  : 10px
 }
 
     .form-group label {
@@ -297,8 +299,9 @@ input.form-control {
     }
 form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 20px;
+    flex-wrap  : wrap;
 }
 
 /* Input, Select, and Textarea Styling */
@@ -362,6 +365,7 @@ button,
 
 .delete-btn {
     background-color: #c0392b;
+    margin-left  : 20px;
     color: white;
     border: none;
     padding: 6px 12px;
