@@ -53,8 +53,6 @@ namespace Mindful.Controllers
                         SubjectName = row["subject_name"].ToString()
                     });
                 }
-
-                // Populate dropdowns
                 var classData = _dbHelper.ExecuteQuery("SELECT id, name FROM classes");
                 var subjectData = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects");
 
@@ -169,7 +167,6 @@ namespace Mindful.Controllers
                     mark = Convert.ToInt32(row["mark"])
                 };
 
-                // Load dropdowns
                 var students = _dbHelper.ExecuteQuery("SELECT id, first_name + ' ' + last_name AS name FROM students");
                 var subjects = _dbHelper.ExecuteQuery("SELECT id, name FROM subjects");
 

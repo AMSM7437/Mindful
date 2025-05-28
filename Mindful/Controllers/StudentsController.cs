@@ -67,7 +67,6 @@ namespace Mindful.Controllers
         {
             var student = new Students();
 
-            // Optional: If you're using a dropdown for class selection
             var classData = _dbHelper.ExecuteQuery("SELECT id, name FROM classes");
             student.ClassOptions = classData.AsEnumerable()
                 .Select(r => new SelectListItem
@@ -76,7 +75,7 @@ namespace Mindful.Controllers
                     Text = r["name"].ToString()
                 }).ToList();
 
-            return View(student); // ✅ Model is no longer null
+            return View(student); 
         }
 
 
@@ -214,11 +213,10 @@ namespace Mindful.Controllers
         {
             try
             {
-                // First delete grades associated with the student
+               
                 var deleteGradesQuery = "DELETE FROM grades WHERE studentsid = @id";
                 _dbHelper.ExecuteNonQuery(deleteGradesQuery, new[] { new SqlParameter("@id", id) });
 
-                // Then delete the student
                 var deleteStudentQuery = "DELETE FROM students WHERE id = @id";
                 _dbHelper.ExecuteNonQuery(deleteStudentQuery, new[] { new SqlParameter("@id", id) });
 

@@ -13,9 +13,7 @@
             public string mother_name { get; set; }
             public DateTime? birthdate { get; set; }
             public int address { get; set; }
-
-            // For UI
-            public string? class_name { get; set; } // For Index display
-            public List<SelectListItem>? ClassOptions { get; set; } // For dropdown
+            public string? class_name { get; set; } 
+            public List<SelectListItem>? ClassOptions { get; set; } 
         }
     }

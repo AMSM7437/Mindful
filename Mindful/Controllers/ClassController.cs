@@ -135,7 +135,6 @@ namespace Mindful.Controllers
         {
             try
             {
-                // Check if students reference this class
                 var checkQuery = "SELECT COUNT(*) FROM students WHERE classesid = @id";
                 var count = (int)_dbHelper.ExecuteScalar(checkQuery, new[] { new SqlParameter("@id", id) });
 

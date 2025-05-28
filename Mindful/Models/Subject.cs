@@ -8,11 +8,7 @@ namespace Mindful.Models
         public int? teachersid { get; set; }
         public string name { get; set; }
         public int passing_Grade { get; set; }
-
-        // For displaying teacher name in the view
         public string? teacher_name { get; set; }
-
-        // For dropdown UI
         public List<SelectListItem>? TeacherOptions { get; set; }
     }
 
