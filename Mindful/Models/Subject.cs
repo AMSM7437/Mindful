@@ -23,8 +23,6 @@ namespace Mindful.Models
         // For displaying teacher name in the view
         [Display(Name = "Teacher Name")]
         public string? teacher_name { get; set; }
-
-        // For dropdown UI
         public List<SelectListItem>? TeacherOptions { get; set; }
     }
 }

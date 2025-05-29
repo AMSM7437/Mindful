@@ -190,8 +190,6 @@ namespace Mindful.Controllers
         };
 
                 _dbHelper.ExecuteNonQuery(updateTeacherQuery, parameters);
-
-                // Handle removals: set teachersid = NULL for all that were previously assigned but not submitted
                 var getCurrentSubjectIdsQuery = "SELECT id FROM subjects WHERE teachersid = @id";
                 var currentRows = _dbHelper.ExecuteQuery(getCurrentSubjectIdsQuery, new[] { new SqlParameter("@id", teacher.id) });
 
@@ -206,8 +204,6 @@ namespace Mindful.Controllers
                 new SqlParameter("@id", sid)
             });
                 }
-
-                // Reassign selected subjects (in case user reassigned them)
                 foreach (var sid in submittedIds)
                 {
                     _dbHelper.ExecuteNonQuery("UPDATE subjects SET teachersid = @tid WHERE id = @id", new[] {
@@ -215,8 +211,6 @@ namespace Mindful.Controllers
                 new SqlParameter("@id", sid)
             });
                 }
-            
-                // Assign new subject from dropdown if provided and not already assigned
                 if (teacher.SelectedSubjectId.HasValue && !submittedIds.Contains(teacher.SelectedSubjectId.Value))
                 {
                     _dbHelper.ExecuteNonQuery("UPDATE subjects SET teachersid = @tid WHERE id = @id", new[] {

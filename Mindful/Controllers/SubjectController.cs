@@ -191,11 +191,10 @@ namespace Mindful.Controllers
         {
             try
             {
-                // First delete related grades
+              
                 var deleteGradesQuery = "DELETE FROM grades WHERE subjectsid = @id";
                 _dbHelper.ExecuteNonQuery(deleteGradesQuery, new[] { new SqlParameter("@id", id) });
 
-                // Then delete the subject
                 var deleteSubjectQuery = "DELETE FROM subjects WHERE id = @id";
                 _dbHelper.ExecuteNonQuery(deleteSubjectQuery, new[] { new SqlParameter("@id", id) });
 
