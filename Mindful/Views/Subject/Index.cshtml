@@ -1,16 +1,16 @@
-
 @model IEnumerable<Mindful.Models.Subject>
 @{
     ViewBag.Title = "Subject Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="teachers-container">
     <div class="teachers-layout">
         <aside class="sidebar">
             <div class="drawer-card shadow">
                 <div class="drawer-Header">
                     <p style="color:white; font-size:24px">Mindful</p>
-                    <div class="drawer-divider" style="margin-top : 20px ; margin-bottom : 20px"></div>
+                    <div class="drawer-divider"></div>
                 </div>
                 <div class="drawer-card-body">
                     <nav class="list-group">
@@ -19,59 +19,53 @@
                         <a href="@Url.Action("Index", "Student")" class="list-group-item">Student</a>
                         <a href="#" class="list-group-item active">Subjects</a>
                         <a href="@Url.Action("Index", "Grade")" class="list-group-item">Grades</a>
-                              <a href="@Url.Action("Index", "Class")" class="list-group-item">Classes</a>
+                        <a href="@Url.Action("Index", "Class")" class="list-group-item">Classes</a>
                     </nav>
                 </div>
             </div>
         </aside>
+
         <main class="content">
             <div class="card shadow">
                 <div class="card-header">
                     <h6>Subject Information</h6>
+                    <a href="@Url.Action("Create", "Subject")" class="add-btn">+ Add Subject</a>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <div class="actions">
-                            <a href="@Url.Action("Create", "Subject")" class="add-btn">+ Add Subject</a>
-                        </div>
-                        @if (Model == null || !Model.Any())
-                        {
-                            <div class="alert alert-info">No subjects found in the database.</div>
-                        }
-                        else
-                        {
-                            <div class="table-wrapper">
-                                <table class="teacher-table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Teacher</th>
-                                            <th>Passing Grade</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var subject in Model)
-                                        {
-                                            <tr>
-                                                <td>@subject.id</td>
-                                                <td>@subject.name</td>
-                                                <td>@(subject.teacher_name ?? "")</td>
-                                                <td>@subject.passing_Grade</td>
-                                                <td style="display:flex; gap:10px">
-                                                    <a href="@Url.Action("Edit", "Subject", new { id = subject.id })">Edit</a>
-                                                    <form asp-action="Delete" asp-controller="Subject" method="post" onsubmit="return confirm('Are you sure?');">
-                                                        <input type="hidden" name="id" value="@subject.id" />
-                                                        <button type="submit" class="btn btn-danger delete-btn">Delete</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
+                    <div class="table-wrapper">
+                        <table class="teacher-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Passing Grade</th>
+                                    <th>Teacher</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var s in Model)
+                                {
+                                    <tr>
+                                        <td>@s.id</td>
+                                        <td>@s.name</td>
+                                        <td>@s.passing_Grade</td>
+                                        <td>@s.teacher_name</td>
+                                        <td style="display: flex; gap: 10px;">
+                                            <a href="@Url.Action("Edit", "Subject", new { id = s.id })" class="btn-icon" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form asp-action="Delete" asp-controller="Subject" method="post" onsubmit="return confirm('Delete this subject?');">
+                                                <input type="hidden" name="id" value="@s.id" />
+                                                <button type="submit" class="btn-icon delete" title="Delete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

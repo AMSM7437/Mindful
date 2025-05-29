@@ -11,8 +11,7 @@ namespace Mindful.DataAccess
 
         public DbHelper(IConfiguration configuration)
         {
-            _connectionString = "Server=localhost\\SQLEXPRESS;Database=Mindful;Integrated Security=True;TrustServerCertificate=True;";
-
+            _connectionString = "Server=localhost;Database=Mindful;Integrated Security=True;TrustServerCertificate=True;";
         }
 
         public DataTable ExecuteQuery(string query, SqlParameter[] parameters = null)

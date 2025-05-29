@@ -3,6 +3,7 @@
     ViewBag.Title = "Student Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="teachers-container">
     <div class="teachers-layout">
 
@@ -10,7 +11,7 @@
             <div class="drawer-card shadow">
                 <div class="drawer-Header">
                     <p style="color:white; font-size:24px">Mindful</p>
-                    <div class="drawer-divider" style="margin-top : 20px ; margin-bottom : 20px"></div>
+                    <div class="drawer-divider" style="margin-top: 20px; margin-bottom: 20px"></div>
                 </div>
                 <div class="drawer-card-body">
                     <nav class="list-group">
@@ -27,27 +28,23 @@
 
         <main class="content">
             <div class="card shadow">
-                <div class="card-header">
+                <div class="card-header d-flex justify-between align-center" style="display: flex; justify-content: space-between; align-items: center;">
                     <h6>Student Information</h6>
+                    <a href="@Url.Action("Create", "Student")" class="add-btn">+ Add Student</a>
                 </div>
+
                 <div class="card-body">
-                    <div class="actions">
-                        <a href="@Url.Action("Create", "Student")" class="add-btn">+ Add Student</a>
-                        @{
-                            var currentFilter = ViewContext.HttpContext.Request.Query["addressFilter"].ToString();
-                        }
+                    @{
+                        var currentFilter = ViewContext.HttpContext.Request.Query["addressFilter"].ToString();
+                    }
 
-                        <form method="get" asp-action="Index" class="form-inline mb-3">
-                            <input type="text" name="addressFilter" class="form-control mr-2" placeholder="Enter address..." value="@currentFilter" />
-                            <button type="submit" class="btn btn-primary">Filter</button>
-                            <a href="@Url.Action("Index", "Student")" class="btn btn-secondary ml-2">Clear</a>
-                        </form>
+                    <form method="get" asp-action="Index" class="form-inline filter-form">
+                        <input type="text" name="addressFilter" class="form-control filter-input" placeholder="Enter address..." value="@currentFilter" />
+                        <button type="submit" class="btn btn-primary filter-btn">Filter</button>
+                        <a href="@Url.Action("Index", "Student")" class="btn btn-secondary filter-btn">Clear</a>
+                    </form>
 
-
-
-                    </div>
-
-                    <div class="table-wrapper">
+                    <div class="table-wrapper mt-2">
                         <table class="teacher-table">
                             <thead>
                                 <tr>
@@ -72,13 +69,16 @@
                                         <td>@s.mother_name</td>
                                         <td>@(s.birthdate?.ToString("yyyy/MM/dd") ?? "N/A")</td>
                                         <td>@s.address</td>
-                                        <td style="display:flex; gap:10px">
-                                            <a href="@Url.Action("Edit", "Student", new { id = s.id })">Edit</a>
+                                        <td style="display: flex; gap: 10px;">
+                                            <a href="@Url.Action("Edit", "Student", new { id = s.id })" class="btn-icon" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
                                             <form asp-action="Delete" asp-controller="Student" method="post" onsubmit="return confirm('Are you sure?');">
                                                 <input type="hidden" name="id" value="@s.id" />
-                                                <button type="submit" class="btn btn-danger delete-btn">Delete</button>
+                                                <button type="submit" class="btn-icon delete" title="Delete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             </form>
-                                     
                                         </td>
                                     </tr>
                                 }

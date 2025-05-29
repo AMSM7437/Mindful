@@ -6,7 +6,8 @@ namespace Mindful.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Class name is required")]
+        [Required(ErrorMessage = "Class name is required.")]
+        [Display(Name = "Class Name")]
         public string Name { get; set; }
     }
 }
